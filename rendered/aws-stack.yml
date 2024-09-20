@@ -1,6 +1,6 @@
 ---
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Buildkite stack %v"
+Description: "Buildkite stack v6.18.0"
 
 # The Buildkite Elastic CI Stack for AWS gives you a private,
 # autoscaling Buildkite Agent cluster. Use it to parallelize
@@ -27,114 +27,106 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: Base Configuration
+          default: Buildkite Configuration
         Parameters:
-        - BuildkiteAgentToken
-        - BuildkiteAgentTokenParameterStorePath
-        - BuildkiteAgentTokenParameterStoreKMSKey
-        - BuildkiteQueue
+          - BuildkiteAgentTokenParameterStorePath
+          - BuildkiteAgentTokenParameterStoreKMSKey
+          - BuildkiteAgentToken
+          - BuildkiteQueue
 
       - Label:
-          default: Signed Pipelines Configuration
+          default: Advanced Buildkite Configuration
         Parameters:
-        - PipelineSigningKMSKeyId
-        - PipelineSigningKMSKeySpec
-        - PipelineSigningKMSAccess
-        - PipelineSigningVerificationFailureBehavior
-
-      - Label:
-          default: Advanced Configuration
-        Parameters:
-        - BuildkiteAgentRelease
-        - BuildkiteAgentTags
-        - BuildkiteAgentTimestampLines
-        - BuildkiteAgentExperiments
-        - BuildkiteAgentEnableGitMirrors
-        - BuildkiteAgentTracingBackend
-        - BuildkiteAgentCancelGracePeriod
-        - BuildkiteTerminateInstanceAfterJob
-        - BuildkiteAdditionalSudoPermissions
-        - BuildkiteWindowsAdministrator
-        - BuildkiteAgentScalerServerlessARN
-        - BuildkiteAgentScalerVersion
-        - LogRetentionDays
+          - BuildkiteAgentRelease
+          - BuildkiteAgentTags
+          - BuildkiteAgentTimestampLines
+          - BuildkiteAgentExperiments
+          - BuildkiteAgentEnableGitMirrors
+          - BuildkiteAgentTracingBackend
+          - BuildkiteAgentCancelGracePeriod
+          - BuildkiteTerminateInstanceAfterJob
+          - BuildkiteAdditionalSudoPermissions
+          - BuildkiteWindowsAdministrator
+          - BuildkiteAgentScalerServerlessARN
+          - BuildkiteAgentScalerVersion
+          - LogRetentionDays
 
       - Label:
           default: Network Configuration
         Parameters:
-        - VpcId
-        - Subnets
-        - AvailabilityZones
-        - SecurityGroupIds
-        - AssociatePublicIpAddress
+          - VpcId
+          - Subnets
+          - AvailabilityZones
+          - SecurityGroupIds
+          - AssociatePublicIpAddress
 
       - Label:
           default: Instance Configuration
         Parameters:
-        - ImageId
-        - ImageIdParameter
-        - InstanceOperatingSystem
-        - InstanceTypes
-        - EnableInstanceStorage
-        - MountTmpfsAtTmp
-        - AgentsPerInstance
-        - KeyName
-        - SecretsBucket
-        - SecretsBucketRegion
-        - SecretsBucketEncryption
-        - ArtifactsBucket
-        - AuthorizedUsersUrl
-        - BootstrapScriptUrl
-        - AgentEnvFileUrl
-        - RootVolumeSize
-        - RootVolumeName
-        - RootVolumeType
-        - RootVolumeEncrypted
-        - ManagedPolicyARNs
-        - InstanceRoleName
-        - InstanceRolePermissionsBoundaryARN
-        - IMDSv2Tokens
-        - EnableDetailedMonitoring
-        - InstanceName
+          - ImageId
+          - ImageIdParameter
+          - InstanceOperatingSystem
+          - InstanceTypes
+          - EnableInstanceStorage
+          - MountTmpfsAtTmp
+          - AgentsPerInstance
+          - KeyName
+          - SecretsBucket
+          - SecretsBucketRegion
+          - SecretsBucketEncryption
+          - ArtifactsBucket
+          - AuthorizedUsersUrl
+          - BootstrapScriptUrl
+          - AgentEnvFileUrl
+          - RootVolumeSize
+          - RootVolumeName
+          - RootVolumeType
+          - RootVolumeEncrypted
+          - ManagedPolicyARNs
+          - InstanceRoleName
+          - InstanceRolePermissionsBoundaryARN
+          - IMDSv2Tokens
+          - EnableDetailedMonitoring
+          - InstanceName
 
       - Label:
           default: Auto-scaling Configuration
         Parameters:
-        - MinSize
-        - MaxSize
-        - OnDemandPercentage
-        - SpotAllocationStrategy
-        - ScaleOutFactor
-        - ScaleInIdlePeriod
-        - ScaleOutForWaitingJobs
-        - InstanceCreationTimeout
-        - ScalerEventSchedulePeriod
-        - ScalerMinPollInterval
+          - MinSize
+          - MaxSize
+          - OnDemandPercentage
+          - SpotAllocationStrategy
+          - ScaleOutFactor
+          - ScaleInIdlePeriod
+          - ScaleOutForWaitingJobs
+          - InstanceCreationTimeout
+          - ScalerEventSchedulePeriod
+          - ScalerMinPollInterval
 
       - Label:
           default: Cost Allocation Configuration
         Parameters:
-        - EnableCostAllocationTags
-        - CostAllocationTagName
-        - CostAllocationTagValue
+          - EnableCostAllocationTags
+          - CostAllocationTagName
+          - CostAllocationTagValue
 
       - Label:
           default: Docker Daemon Configuration
         Parameters:
-        - EnableDockerUserNamespaceRemap
-        - EnableDockerExperimental
+          - EnableDockerUserNamespaceRemap
+          - EnableDockerExperimental
 
       - Label:
           default: Docker Registry Configuration
         Parameters:
-        - ECRAccessPolicy
+          - ECRAccessPolicy
 
       - Label:
           default: Plugin Configuration
         Parameters:
-        - EnableSecretsPlugin
-        - EnableECRPlugin
-        - EnableDockerLoginPlugin
+          - EnableSecretsPlugin
+          - EnableECRPlugin
+          - EnableDockerLoginPlugin
 
 Parameters:
   KeyName:
@@ -194,7 +186,7 @@ Parameters:
   BuildkiteAgentScalerVersion:
     Description: Version of the buildkite-agent-scaler to use
     Type: String
-    Default: "1.8.0"
+    Default: "1.7.0"
 
   LogRetentionDays:
     Type: Number
@@ -353,6 +345,14 @@ Parameters:
       - lowest-price
       - capacity-optimized-prioritized
 
+  EnableCapacityRebalance:
+    Description: Whether to have the auto-scaling group attempt to launch a new Spot Instance whenever EC2 notifies that a Spot Instance is at an elevated risk of interruption
+    Type: String
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+
   ScaleOutFactor:
     Description: A decimal factor to apply to scale out changes to speed up or slow down scale-out
     Type: Number
@@ -398,7 +398,7 @@ Parameters:
     Default: 125
 
   RootVolumeIops:
-    Description: If the `RootVolumeType` is gp3, io1, or io2, the number of IOPS to provision for the root volume
+    Description: If the `RootVolumeType` is io1 or io2, the number of IOPS to provision for the root volume
     Type: Number
     Default: 1000
 
@@ -473,22 +473,6 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-
-  DockerNetworkingProtocol:
-    Type: String
-    Description: Which IP version to enable for docker containers and building docker images. Only applies to Linux instances, not Windows.
-    AllowedValues:
-      - "ipv4"
-      - "dualstack"
-    Default: "ipv4"
-
-  EnableCapacityRebalance:
-    Description: Whether to have the auto-scaling group attempt to launch a new Spot Instance whenever EC2 notifies that a Spot Instance is at an elevated risk of interruption
-    Type: String
-    AllowedValues:
-      - "true"
-      - "false"
-    Default: "false"
 
   EnableSecretsPlugin:
     Type: String
@@ -588,60 +572,20 @@ Parameters:
     Description: Optional - Customise the EC2 instance Name tag
     Default: ""
 
-  PipelineSigningKMSKeyId:
-    Type: String
-    Description: Optional - Identifier of the KMS key used to sign and verify pipelines (Created if left blank and PipelineSigningKMSKeySpec is selected)
-    Default: ""
-
-  PipelineSigningKMSKeySpec:
-    Type: String
-    Description: The key spec for the KMS key used to sign and verify pipelines
-    AllowedValues:
-      - "ECC_NIST_P256"
-      - "none"
-    Default: "none"
-
-  PipelineSigningKMSAccess:
-    Type: String
-    Description: The access level for the KMS key used to sign and verify pipelines
-    AllowedValues:
-      - "sign-and-verify"
-      - "verify"
-    Default: "sign-and-verify"
-
-  PipelineSigningVerificationFailureBehavior:
-    Type: String
-    Description: The behavior when a job is received without a valid verifiable signature (without a signature, with an invalid signature, or with a signature that fails verification)
-    AllowedValues:
-      - "block"
-      - "warn"
-    Default: "block"
-
 Rules:
   HasToken:
     Assertions:
       - Assert:
           !Or
-            - !Not
-              - !Equals
-                - !Ref BuildkiteAgentToken
-                - ""
-            - !Not
-              - !Equals
-                - !Ref BuildkiteAgentTokenParameterStorePath
-                - ""
+          - !Not
+            - !Equals
+              - !Ref BuildkiteAgentToken
+              - ""
+          - !Not
+            - !Equals
+              - !Ref BuildkiteAgentTokenParameterStorePath
+              - ""
         AssertDescription: "You must provide BuildkiteAgentToken or BuildkiteAgentTokenParameterStorePath"
-  HasPipelineSigningKMSKey:
-    Assertions:
-      - Assert:
-          !Or
-            - !Equals
-              - !Ref PipelineSigningKMSKeyId
-              - ""            
-            - !Equals
-              - !Ref PipelineSigningKMSKeySpec
-              - "none"
-        AssertDescription: "You must provide either provide a PipelineSigningKMSKeyId or select a PipelineSigningKMSKeySpec but not both"
 
 Outputs:
   VpcId:
@@ -662,12 +606,6 @@ Outputs:
     Export:
       Name: !Sub '${AWS::StackName}-ManagedSecretsLoggingBucket'
 
-  PipelineSigningKMSKey:
-    Value:
-      !If [ CreatePipelineSigningKMSKey, !Ref PipelineSigningKMSKey, "none" ]
-    Export:
-      Name: !Sub '${AWS::StackName}-PipelineSigningKMSKey'
-
   AutoScalingGroupName:
     Value: !Ref AgentAutoScaleGroup
     Export:
@@ -679,158 +617,143 @@ Outputs:
       Name: !Sub '${AWS::StackName}-InstanceRoleName'
 
 Conditions:
-    CreateVpcResources:
-      !Equals [ !Ref VpcId, "" ]
+  CreateVpcResources:
+    !Equals [ !Ref VpcId, "" ]
 
-    CreateSecurityGroup:
-      !Equals [ !Ref SecurityGroupIds, "" ]
+  CreateSecurityGroup:
+    !Equals [ !Ref SecurityGroupIds, "" ]
 
-    CreateSecretsBucket:
-      !And
-         - !Equals [ !Ref EnableSecretsPlugin, "true"]
-         - !Equals [ !Ref SecretsBucket, "" ]
+  CreateSecretsBucket:
+    !And
+    - !Equals [ !Ref EnableSecretsPlugin, "true"]
+    - !Equals [ !Ref SecretsBucket, "" ]
 
-    EnforceSecretsBucketEncryption:
-      !And
-         - !Condition CreateSecretsBucket
-         - !Equals [ !Ref SecretsBucketEncryption, "true"]
+  EnforceSecretsBucketEncryption:
+    !And
+    - !Condition CreateSecretsBucket
+    - !Equals [ !Ref SecretsBucketEncryption, "true"]
 
-    SetInstanceRoleName:
-      !Not [ !Equals [ !Ref InstanceRoleName, "" ] ]
+  SetInstanceRoleName:
+    !Not [ !Equals [ !Ref InstanceRoleName, "" ] ]
 
-    SetInstanceRolePermissionsBoundaryARN:
-      !Not [ !Equals [ !Ref InstanceRolePermissionsBoundaryARN, "" ] ]
+  SetInstanceRolePermissionsBoundaryARN:
+    !Not [ !Equals [ !Ref InstanceRolePermissionsBoundaryARN, "" ] ]
 
-    UseSpecifiedSecretsBucket:
-      !Not [ !Equals [ !Ref SecretsBucket, "" ] ]
+  UseSpecifiedSecretsBucket:
+    !Not [ !Equals [ !Ref SecretsBucket, "" ] ]
 
-    HasSecretsBucket:
-      !Or [ !Condition CreateSecretsBucket, !Condition UseSpecifiedSecretsBucket ]
+  HasSecretsBucket:
+    !Or [ !Condition CreateSecretsBucket, !Condition UseSpecifiedSecretsBucket ]
 
-    UseSpecifiedAvailabilityZones:
-      !Not [ !Equals [ !Join [ "", !Ref AvailabilityZones ], "" ]  ]
+  UseSpecifiedAvailabilityZones:
+    !Not [ !Equals [ !Join [ "", !Ref AvailabilityZones ], "" ]  ]
 
-    UseArtifactsBucket:
-      !Not [ !Equals [ !Ref ArtifactsBucket, "" ] ]
+  UseArtifactsBucket:
+    !Not [ !Equals [ !Ref ArtifactsBucket, "" ] ]
 
-    HasImageId:
-      !Not [ !Equals [ !Ref ImageId, "" ] ]
-    HasImageIdParameter:
-      !Not [ !Equals [ !Ref ImageIdParameter, "" ] ]
+  HasImageId:
+    !Not [ !Equals [ !Ref ImageId, "" ] ]
+  HasImageIdParameter:
+    !Not [ !Equals [ !Ref ImageIdParameter, "" ] ]
 
-    UseDefaultInstanceCreationTimeout:
-      !Equals [ !Ref InstanceCreationTimeout, "" ]
+  UseDefaultInstanceCreationTimeout:
+    !Equals [ !Ref InstanceCreationTimeout, "" ]
 
-    UseDefaultRootVolumeName:
-      !Equals [ !Ref RootVolumeName, "" ]
+  UseDefaultRootVolumeName:
+    !Equals [ !Ref RootVolumeName, "" ]
 
-    UseInstanceType2:
-      !Not [ !Equals [ !Select [ "1", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ], ""] ]
+  UseInstanceType2:
+    !Not [ !Equals [ !Select [ "1", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ], ""] ]
 
-    UseInstanceType3:
-      !Not [ !Equals [ !Select [ "2", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ], ""] ]
+  UseInstanceType3:
+    !Not [ !Equals [ !Select [ "2", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ], ""] ]
 
-    UseInstanceType4:
-      !Not [ !Equals [ !Select [ "3", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ], ""] ]
+  UseInstanceType4:
+    !Not [ !Equals [ !Select [ "3", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ], ""] ]
 
-    UseManagedPolicyARN:
-      !Not [ !Equals [ !Join [ "", !Ref ManagedPolicyARNs ], "" ] ]
+  UseManagedPolicyARN:
+    !Not [ !Equals [ !Join [ "", !Ref ManagedPolicyARNs ], "" ] ]
 
-    UseECR:
-      !Not [ !Equals [ !Ref ECRAccessPolicy, "none" ] ]
+  UseECR:
+    !Not [ !Equals [ !Ref ECRAccessPolicy, "none" ] ]
 
-    UseCustomerManagedParameterPath:
-      !Not [ !Equals [ !Ref BuildkiteAgentTokenParameterStorePath, "" ] ]
-    UseCustomerManagedKeyForParameterStore:
-      !Not [ !Equals [ !Ref BuildkiteAgentTokenParameterStoreKMSKey, "" ] ]
-    CreateAgentTokenParameter:
-      !Equals [ !Ref BuildkiteAgentTokenParameterStorePath, "" ]
+  UseCustomerManagedParameterPath:
+    !Not [ !Equals [ !Ref BuildkiteAgentTokenParameterStorePath, "" ] ]
+  UseCustomerManagedKeyForParameterStore:
+    !Not [ !Equals [ !Ref BuildkiteAgentTokenParameterStoreKMSKey, "" ] ]
+  CreateAgentTokenParameter:
+    !Equals [ !Ref BuildkiteAgentTokenParameterStorePath, "" ]
 
-    HasVariableSize:
-      !Not [ !Equals [ !Ref MaxSize, !Ref MinSize ] ]
+  HasVariableSize:
+    !Not [ !Equals [ !Ref MaxSize, !Ref MinSize ] ]
 
-    UseCostAllocationTags:
-      !Equals [ !Ref EnableCostAllocationTags, "true" ]
-    
-    UsePipelineSigningKMSKey:
-      !Not [ !Equals [ !Ref PipelineSigningKMSKeyId, "" ] ]
+  UseCostAllocationTags:
+    !Equals [ !Ref EnableCostAllocationTags, "true" ]
 
-    CreatePipelineSigningKMSKey:
-      !And
-      - !Equals [ !Ref PipelineSigningKMSKeyId, "" ]
-      - !Not [ !Equals [ !Ref PipelineSigningKMSKeySpec, "none" ] ]
+  HasKeyName:
+    !Not [ !Equals [ !Ref KeyName, "" ] ]
 
-    HasPipelineSigningKMSKey:
-      !Or [ !Condition CreatePipelineSigningKMSKey, !Condition UsePipelineSigningKMSKey ]
+  EnableSshIngress:
+    !And
+    - { Condition : CreateSecurityGroup }
+    # Enable ingress if a key can be specified another way
+    - !Or
+      - { Condition: HasKeyName }
+      - !Not [ !Equals [ !Ref AuthorizedUsersUrl, "" ] ]
 
-    HasSigningKMSAccessSignAndVerify:
-      !Equals [ !Ref PipelineSigningKMSAccess, "sign-and-verify" ]
+  # Whether or not there's any managed polices to attach
+  HasManagedPolicies:
+    !Or [ { Condition: UseManagedPolicyARN }, { Condition: UseECR } ]
 
-    HasKeyName:
-      !Not [ !Equals [ !Ref KeyName, "" ] ]
+  UseWindowsAgents:
+    !Equals [ !Ref InstanceOperatingSystem, "windows" ]
 
-    EnableSshIngress:
-      !And
-        - { Condition : CreateSecurityGroup }
-        # Enable ingress if a key can be specified another way
-        - !Or
-          - { Condition: HasKeyName }
-          - !Not [ !Equals [ !Ref AuthorizedUsersUrl, "" ] ]
+  UseLinuxAgents:
+    !Equals [ !Ref InstanceOperatingSystem, "linux" ]
 
-    # Whether or not there's any managed polices to attach
-    HasManagedPolicies:
-      !Or [ { Condition: UseManagedPolicyARN }, { Condition: UseECR } ]
+  # Unfortunately, Cloudformation's !Or intrinsic function only accepts
+  # between 2 and 10 arguments.  To get around this, we're grouping the
+  # instance families in sub-conditionals.  At least this doesn't force us
+  # into using a Custom Resource.
+  UsingArmInstances:
+    !Or
+    - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "a1" ]
+    - !Or
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c6g" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c6gd" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c6gn" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c7g" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c7gd" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c7gn" ]
+    - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "g5g" ]
+    - !Or
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "i4g" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "Im4gn" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "Is4gen" ]
+    - !Or
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m6g" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m6gd" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m7g" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m7gd" ]
+    - !Or
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r6g" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r6gd" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r7g" ]
+      - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r7gd" ]
+    - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "t4g" ]
+    - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "x2gd" ]
 
-    UseWindowsAgents:
-      !Equals [ !Ref InstanceOperatingSystem, "windows" ]
+  UseStackNameForInstanceName:
+    !Equals [ !Ref InstanceName, "" ]
 
-    UseLinuxAgents:
-      !Equals [ !Ref InstanceOperatingSystem, "linux" ]
+  IsRootVolumeIsGp3:
+    !Equals [ !Ref RootVolumeType, "gp3" ]
 
-    # Unfortunately, Cloudformation's !Or intrinsic function only accepts
-    # between 2 and 10 arguments.  To get around this, we're grouping the
-    # instance families in sub-conditionals.  At least this doesn't force us
-    # into using a Custom Resource.
-    UsingArmInstances:
-      !Or
-        - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "a1" ]
-        - !Or
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c6g" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c6gd" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c6gn" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c7g" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c7gd" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "c7gn" ]
-        - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "g5g" ]
-        - !Or
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "i4g" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "Im4gn" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "Is4gen" ]
-        - !Or
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m6g" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m6gd" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m7g" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "m7gd" ]
-        - !Or
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r6g" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r6gd" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r7g" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r7gd" ]
-          - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "r8g" ]
-        - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "t4g" ]
-        - !Equals [ !Select [ 0, !Split [ ".", !Ref InstanceTypes ] ], "x2gd" ]
-
-    UseStackNameForInstanceName:
-      !Equals [ !Ref InstanceName, "" ]
-
-    IsRootVolumeIsGp3:
-      !Equals [ !Ref RootVolumeType, "gp3" ]
-
-    IsRootVolumeIsIo1OrIo2OrGp3:
-      !Or
-        - !Equals [ !Ref RootVolumeType, "io1" ]
-        - !Equals [ !Ref RootVolumeType, "io2" ]
-        - !Equals [ !Ref RootVolumeType, "gp3" ]
+  IsRootVolumeIsIo1OrIo2OrGp3:
+    !Or
+    - !Equals [ !Ref RootVolumeType, "io1" ]
+    - !Equals [ !Ref RootVolumeType, "io2" ]
+    - !Equals [ !Ref RootVolumeType, "gp3" ]
 
 Mappings:
   ECRManagedPolicy:
@@ -840,7 +763,27 @@ Mappings:
     full      : { Policy: 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess' }
 
   # Generated from Makefile via build/mappings.yml
-  AWSRegion2AMI: { linuxamd64: !Ref ImageId, linuxarm64: !Ref ImageId, windows: !Ref ImageId }
+  AWSRegion2AMI:
+    us-east-1 : { linuxamd64: ami-02d5df6d2622a53aa, linuxarm64: ami-044536c494be0e976, windows: ami-061fe984fab54aad9 }
+    us-east-2 : { linuxamd64: ami-00fa160ece352f0fd, linuxarm64: ami-0a60b2d05d6644676, windows: ami-0f0b746d7b3518c11 }
+    us-west-1 : { linuxamd64: ami-042b90d109ad0a9e7, linuxarm64: ami-0870abb1c57596c53, windows: ami-0eedc46045dcb95e9 }
+    us-west-2 : { linuxamd64: ami-0180f7fb0f07eb0bc, linuxarm64: ami-00686bdc2043a5505, windows: ami-08b7fcba3222be7cd }
+    af-south-1 : { linuxamd64: ami-05f31bf189ea9272e, linuxarm64: ami-0a435ec39c4c96929, windows: ami-014958d3feda54514 }
+    ap-east-1 : { linuxamd64: ami-0f12e2627c0fa499c, linuxarm64: ami-07a954d68c6d45fbf, windows: ami-0e0ba4b01a5c7d622 }
+    ap-south-1 : { linuxamd64: ami-0d5b8317861f55f10, linuxarm64: ami-064ca365dfb82f951, windows: ami-0e885b11d5b67ca2f }
+    ap-northeast-2 : { linuxamd64: ami-0e255cb0d894dadb6, linuxarm64: ami-0a540f762f2ba8cad, windows: ami-0662c3dda291b0aa8 }
+    ap-northeast-1 : { linuxamd64: ami-0d0f9de462d8e310c, linuxarm64: ami-0c7f951ca0c4bc90a, windows: ami-03433edb58e0bedfa }
+    ap-southeast-2 : { linuxamd64: ami-00c5d9d2966e095ab, linuxarm64: ami-0e5ed94572f0851bb, windows: ami-0ee2a7039f8cc4917 }
+    ap-southeast-1 : { linuxamd64: ami-00ec4d12670ad1b69, linuxarm64: ami-008cdc9eea67d1771, windows: ami-0071b8cada4546f09 }
+    ca-central-1 : { linuxamd64: ami-0f4899f63bd60586b, linuxarm64: ami-0f9ad242232a46672, windows: ami-0f320bbbfb06c05c6 }
+    eu-central-1 : { linuxamd64: ami-0d93af7178eef6d57, linuxarm64: ami-09d50b66c07f330eb, windows: ami-06c1330e76b7f2db6 }
+    eu-west-1 : { linuxamd64: ami-0cfff8bed654b6ecc, linuxarm64: ami-04e588baf3cae6d18, windows: ami-019c76cf88356fe7d }
+    eu-west-2 : { linuxamd64: ami-0cb9121694a4f96f7, linuxarm64: ami-00c431f6188944e4f, windows: ami-045a2b234986dee76 }
+    eu-south-1 : { linuxamd64: ami-06f959a8e0e58906d, linuxarm64: ami-0ef970626d2a49b33, windows: ami-0105ee5d18df2035a }
+    eu-west-3 : { linuxamd64: ami-0f54644053fc7c950, linuxarm64: ami-0e825bcc25db50178, windows: ami-08e4757be909cd4df }
+    eu-north-1 : { linuxamd64: ami-03c69a15d635f6c67, linuxarm64: ami-034582a1abf69fd50, windows: ami-05cc5852c85759139 }
+    me-south-1 : { linuxamd64: ami-017da5f118a6996d4, linuxarm64: ami-0957a5ab7eec8cf05, windows: ami-049b20928fd3c1a17 }
+    sa-east-1 : { linuxamd64: ami-04c8fcec9e5d65850, linuxarm64: ami-0bf37907dac565774, windows: ami-0a309ff42f8e7dc49 }
 
 Resources:
   Vpc:
@@ -876,9 +819,9 @@ Resources:
     Properties:
       AvailabilityZone:
         !If
-          - "UseSpecifiedAvailabilityZones"
-          - !Select [ 0, !Ref AvailabilityZones ]
-          - !Select [ 0, !GetAZs '' ]
+        - "UseSpecifiedAvailabilityZones"
+        - !Select [ 0, !Ref AvailabilityZones ]
+        - !Select [ 0, !GetAZs '' ]
       CidrBlock: 10.0.1.0/24
       VpcId: !Ref Vpc
       Tags:
@@ -893,9 +836,9 @@ Resources:
     Properties:
       AvailabilityZone:
         !If
-          - "UseSpecifiedAvailabilityZones"
-          - !Select [ 1, !Ref AvailabilityZones ]
-          - !Select [ 1, !GetAZs '' ]
+        - "UseSpecifiedAvailabilityZones"
+        - !Select [ 1, !Ref AvailabilityZones ]
+        - !Select [ 1, !GetAZs '' ]
       CidrBlock: 10.0.2.0/24
       VpcId: !Ref Vpc
       Tags:
@@ -952,18 +895,6 @@ Resources:
       Name: !Sub "/${AWS::StackName}/buildkite/agent-token"
       Type: String
       Value: !Ref BuildkiteAgentToken
-  
-  PipelineSigningKMSKey:
-    Type: AWS::KMS::Key
-    Condition: CreatePipelineSigningKMSKey
-    DeletionPolicy: Retain
-    Properties:
-      Description: Key used to sign and verify pipelines
-      KeySpec: !Ref PipelineSigningKMSKeySpec
-      KeyUsage: SIGN_VERIFY
-      Tags:
-        - Key: Name
-          Value: !Sub '${AWS::StackName}-PipelineSigningKey'
 
   # Allow ec2 instances to assume a role and be granted the IAMPolicies
   IAMInstanceProfile:
@@ -978,44 +909,24 @@ Resources:
       RoleName: !If [ SetInstanceRoleName, !Ref InstanceRoleName, !Sub "${AWS::StackName}-Role" ]
       PermissionsBoundary: !If [ SetInstanceRolePermissionsBoundaryARN, !Ref InstanceRolePermissionsBoundaryARN, !Ref "AWS::NoValue" ]
       ManagedPolicyArns: !If
-          - HasManagedPolicies
-          # Support multiple policies to attach by merging the values together and splitting on ','
-          - !Split
+        - HasManagedPolicies
+        # Support multiple policies to attach by merging the values together and splitting on ','
+        - !Split
+          - ','
+          # Join will skip over AWS::NoValue values
+          - !Join
             - ','
-            # Join will skip over AWS::NoValue values
-            - !Join
-             - ','
-             - - !If
-                 - UseECR
-                 - !FindInMap [ ECRManagedPolicy, !Ref ECRAccessPolicy, 'Policy' ]
-                 - !Ref 'AWS::NoValue'
-               # This may support multiple values of its own (separated by commas)
-               - !If
-                 - UseManagedPolicyARN
-                 - !Join [ ',', !Ref ManagedPolicyARNs ]
-                 - !Ref 'AWS::NoValue'
-          - !Ref 'AWS::NoValue'
+            - - !If
+                - UseECR
+                - !FindInMap [ ECRManagedPolicy, !Ref ECRAccessPolicy, 'Policy' ]
+                - !Ref 'AWS::NoValue'
+              # This may support multiple values of its own (separated by commas)
+              - !If
+                - UseManagedPolicyARN
+                - !Join [ ',', !Ref ManagedPolicyARNs ]
+                - !Ref 'AWS::NoValue'
+        - !Ref 'AWS::NoValue'
       Policies:
-        - !If
-          - HasPipelineSigningKMSKey
-          - PolicyName: PipelineSigningKMSKeyAccess
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    !If
-                      - HasSigningKMSAccessSignAndVerify
-                      - - kms:Sign
-                        - kms:Verify
-                        - kms:GetPublicKey
-                      - - kms:Verify
-                        - kms:GetPublicKey
-                  Resource: !If
-                              - CreatePipelineSigningKMSKey
-                              - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${PipelineSigningKMSKey}
-                              - !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/${PipelineSigningKMSKeyId}
-          - !Ref 'AWS::NoValue'
         - !If
           - UseCustomerManagedKeyForParameterStore
           - PolicyName: DecryptAgentToken
@@ -1035,8 +946,8 @@ Resources:
                 Action: ssm:GetParameter
                 Resource:
                   !Sub
-                    - arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${ParameterPath}
-                    - ParameterPath: !If [ UseCustomerManagedParameterPath, !Ref BuildkiteAgentTokenParameterStorePath, !Ref BuildkiteAgentTokenParameter ]
+                  - arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter${ParameterPath}
+                  - ParameterPath: !If [ UseCustomerManagedParameterPath, !Ref BuildkiteAgentTokenParameterStorePath, !Ref BuildkiteAgentTokenParameter ]
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -1141,8 +1052,8 @@ Resources:
         - EnforceSecretsBucketEncryption
         -
           ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: "AES256"
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: "AES256"
         - !Ref "AWS::NoValue"
       Tags:
         - !If
@@ -1160,33 +1071,33 @@ Resources:
         Id: ManagedSecretsLoggingBucketPolicy
         Version: "2012-10-17"
         Statement:
-        - Sid: S3ServerAccessLogsPolicy # Grant permissions to the logging service principal using a bucket policy (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html)
-          Effect: Allow
-          Principal:
-            Service: 'logging.s3.amazonaws.com'
-          Action:
-          - 's3:PutObject'
-          Resource:
-          - !GetAtt 'ManagedSecretsLoggingBucket.Arn'
-          - !Sub '${ManagedSecretsLoggingBucket.Arn}/*'
-          Condition:
-            ArnLike:
-              'aws:SourceArn': !GetAtt 'ManagedSecretsBucket.Arn'
-            StringEquals:
-              'aws:SourceAccount': !Ref 'AWS::AccountId'
-        - !If
-          - EnforceSecretsBucketEncryption
-          - Sid: AllowSSLRequestsOnly # AWS Foundational Security Best Practices v1.0.0 S3.5
-            Effect: Deny
-            Principal: '*'
-            Action: 's3:*'
+          - Sid: S3ServerAccessLogsPolicy # Grant permissions to the logging service principal using a bucket policy (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html)
+            Effect: Allow
+            Principal:
+              Service: 'logging.s3.amazonaws.com'
+            Action:
+              - 's3:PutObject'
             Resource:
-            - !GetAtt 'ManagedSecretsLoggingBucket.Arn'
-            - !Sub '${ManagedSecretsLoggingBucket.Arn}/*'
+              - !GetAtt 'ManagedSecretsLoggingBucket.Arn'
+              - !Sub '${ManagedSecretsLoggingBucket.Arn}/*'
             Condition:
-              Bool:
-                'aws:SecureTransport': false
-          - !Ref "AWS::NoValue"
+              ArnLike:
+                'aws:SourceArn': !GetAtt 'ManagedSecretsBucket.Arn'
+              StringEquals:
+                'aws:SourceAccount': !Ref 'AWS::AccountId'
+          - !If
+            - EnforceSecretsBucketEncryption
+            - Sid: AllowSSLRequestsOnly # AWS Foundational Security Best Practices v1.0.0 S3.5
+              Effect: Deny
+              Principal: '*'
+              Action: 's3:*'
+              Resource:
+                - !GetAtt 'ManagedSecretsLoggingBucket.Arn'
+                - !Sub '${ManagedSecretsLoggingBucket.Arn}/*'
+              Condition:
+                Bool:
+                  'aws:SecureTransport': false
+            - !Ref "AWS::NoValue"
 
   ManagedSecretsBucket:
     Type: AWS::S3::Bucket
@@ -1198,8 +1109,8 @@ Resources:
         - EnforceSecretsBucketEncryption
         -
           ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: "AES256"
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: "AES256"
         - !Ref "AWS::NoValue"
       LoggingConfiguration:
         DestinationBucketName: !Ref ManagedSecretsLoggingBucket
@@ -1226,16 +1137,16 @@ Resources:
         Id: ManagedSecretsBucketPolicy
         Version: "2012-10-17"
         Statement:
-        - Sid: AllowSSLRequestsOnly # AWS Foundational Security Best Practices v1.0.0 S3.5
-          Effect: Deny
-          Principal: '*'
-          Action: 's3:*'
-          Resource:
-          - !GetAtt 'ManagedSecretsBucket.Arn'
-          - !Sub '${ManagedSecretsBucket.Arn}/*'
-          Condition:
-            Bool:
-              'aws:SecureTransport': false
+          - Sid: AllowSSLRequestsOnly # AWS Foundational Security Best Practices v1.0.0 S3.5
+            Effect: Deny
+            Principal: '*'
+            Action: 's3:*'
+            Resource:
+              - !GetAtt 'ManagedSecretsBucket.Arn'
+              - !Sub '${ManagedSecretsBucket.Arn}/*'
+            Condition:
+              Bool:
+                'aws:SecureTransport': false
 
   ImageIdParameterStack:
     Type: AWS::CloudFormation::Stack
@@ -1249,187 +1160,178 @@ Resources:
     Type: "AWS::EC2::LaunchTemplate"
     Properties:
       LaunchTemplateData:
-          NetworkInterfaces:
-            - DeviceIndex: 0
-              AssociatePublicIpAddress: { Ref: AssociatePublicIpAddress }
-              Groups: !Split [ ",", !If [ "CreateSecurityGroup", !Ref SecurityGroup, !Ref SecurityGroupIds ] ]
-          KeyName: !If [ "HasKeyName", !Ref KeyName, !Ref 'AWS::NoValue' ]
-          IamInstanceProfile:
-            Arn: !GetAtt "IAMInstanceProfile.Arn"
-          InstanceType: !Select [ "0", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
-          MetadataOptions:
-            HttpTokens: !Ref IMDSv2Tokens
-            # Allow containers using a Docker network on the host to receive IDMSv2 responses
-            HttpPutResponseHopLimit: 2
-            InstanceMetadataTags: enabled
-          Monitoring:
-            Enabled: !Ref EnableDetailedMonitoring
-          ImageId: !If
-            - HasImageId
-            - !Ref ImageId
+        NetworkInterfaces:
+          - DeviceIndex: 0
+            AssociatePublicIpAddress: { Ref: AssociatePublicIpAddress }
+            Groups: !Split [ ",", !If [ "CreateSecurityGroup", !Ref SecurityGroup, !Ref SecurityGroupIds ] ]
+        KeyName: !If [ "HasKeyName", !Ref KeyName, !Ref 'AWS::NoValue' ]
+        IamInstanceProfile:
+          Arn: !GetAtt "IAMInstanceProfile.Arn"
+        InstanceType: !Select [ "0", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
+        MetadataOptions:
+          HttpTokens: !Ref IMDSv2Tokens
+          # Allow containers using a Docker network on the host to receive IDMSv2 responses
+          HttpPutResponseHopLimit: 2
+          InstanceMetadataTags: enabled
+        Monitoring:
+          Enabled: !Ref EnableDetailedMonitoring
+        ImageId: !If
+          - HasImageId
+          - !Ref ImageId
+          - !If
+            - HasImageIdParameter
+            - !GetAtt ImageIdParameterStack.Outputs.ImageId
             - !If
-              - HasImageIdParameter
-              - !GetAtt ImageIdParameterStack.Outputs.ImageId
+              - UseWindowsAgents
+              - !FindInMap
+                - AWSRegion2AMI
+                - !Ref 'AWS::Region'
+                - 'windows'
               - !If
-                - UseWindowsAgents
+                - UsingArmInstances
                 - !FindInMap
                   - AWSRegion2AMI
                   - !Ref 'AWS::Region'
-                  - 'windows'
-                - !If
-                  - UsingArmInstances
-                  - !FindInMap
-                    - AWSRegion2AMI
-                    - !Ref 'AWS::Region'
-                    - 'linuxarm64'
-                  - !FindInMap
-                    - AWSRegion2AMI
-                    - !Ref 'AWS::Region'
-                    - 'linuxamd64'
-          BlockDeviceMappings:
-            - DeviceName: !If [ UseDefaultRootVolumeName, !If [ UseWindowsAgents, /dev/sda1, /dev/xvda ], !Ref RootVolumeName ]
-              Ebs:
-                VolumeSize: !Ref RootVolumeSize
-                VolumeType: !Ref RootVolumeType
-                Encrypted: !Ref RootVolumeEncrypted
-                Throughput: !If [ IsRootVolumeIsGp3, !Ref RootVolumeThroughput, !Ref "AWS::NoValue" ]
-                Iops: !If [ IsRootVolumeIsIo1OrIo2OrGp3, !Ref RootVolumeIops, !Ref "AWS::NoValue" ]
-          TagSpecifications:
-            - ResourceType: instance
+                  - 'linuxarm64'
+                - !FindInMap
+                  - AWSRegion2AMI
+                  - !Ref 'AWS::Region'
+                  - 'linuxamd64'
+        BlockDeviceMappings:
+          - DeviceName: !If [ UseDefaultRootVolumeName, !If [ UseWindowsAgents, /dev/sda1, /dev/xvda ], !Ref RootVolumeName ]
+            Ebs:
+              VolumeSize: !Ref RootVolumeSize
+              VolumeType: !Ref RootVolumeType
+              Encrypted: !Ref RootVolumeEncrypted
+              Throughput: !If [ IsRootVolumeIsGp3, !Ref RootVolumeThroughput, !Ref "AWS::NoValue" ]
+              Iops: !If [ IsRootVolumeIsIo1OrIo2OrGp3, !Ref RootVolumeIops, !Ref "AWS::NoValue" ]
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Role
+                Value: buildkite-agent
+              - Key: Name
+                Value: !If [ UseStackNameForInstanceName, !Ref "AWS::StackName", !Ref InstanceName ]
+              - Key: BuildkiteAgentRelease
+                Value: !Ref BuildkiteAgentRelease
+              - Key: BuildkiteQueue
+                Value: !Ref BuildkiteQueue
+              - !If
+                - UseCostAllocationTags
+                - Key: !Ref CostAllocationTagName
+                  Value: !Ref CostAllocationTagValue
+                - !Ref "AWS::NoValue"
+          - !If
+            - UseCostAllocationTags
+            - ResourceType: volume
               Tags:
-                - Key: Role
-                  Value: buildkite-agent
-                - Key: Name
-                  Value: !If [ UseStackNameForInstanceName, !Ref "AWS::StackName", !Ref InstanceName ]
-                - Key: BuildkiteAgentRelease
-                  Value: !Ref BuildkiteAgentRelease
-                - Key: BuildkiteQueue
-                  Value: !Ref BuildkiteQueue
-                - !If
-                  - UseCostAllocationTags
-                  - Key: !Ref CostAllocationTagName
-                    Value: !Ref CostAllocationTagValue
-                  - !Ref "AWS::NoValue"
-            - !If
-              - UseCostAllocationTags
-              - ResourceType: volume
-                Tags:
-                  - Key: !Ref CostAllocationTagName
-                    Value: !Ref CostAllocationTagValue
-              - !Ref "AWS::NoValue"
+                - Key: !Ref CostAllocationTagName
+                  Value: !Ref CostAllocationTagValue
+            - !Ref "AWS::NoValue"
 
-          UserData:
-            Fn::Base64: !If
-              - UseWindowsAgents
-              - !Sub
-                - |
-                  <powershell>
-                  $Env:DOCKER_USERNS_REMAP="${EnableDockerUserNamespaceRemap}"
-                  $Env:DOCKER_EXPERIMENTAL="${EnableDockerExperimental}"
-                  $Env:DOCKER_NETWORKING_PROTOCOL="${DockerNetworkingProtocol}"
-                  powershell -file C:\buildkite-agent\bin\bk-configure-docker.ps1 >> C:\buildkite-agent\elastic-stack.log
-
-                  $Env:BUILDKITE_STACK_NAME="${AWS::StackName}"
-                  $Env:BUILDKITE_STACK_VERSION="%v"
-                  $Env:BUILDKITE_SCALE_IN_IDLE_PERIOD="${ScaleInIdlePeriod}"
-                  $Env:BUILDKITE_SECRETS_BUCKET="${LocalSecretsBucket}"
-                  $Env:BUILDKITE_SECRETS_BUCKET_REGION="${LocalSecretsBucketRegion}"
-                  $Env:BUILDKITE_AGENT_TOKEN_PATH="${AgentTokenPath}"
-                  $Env:BUILDKITE_AGENTS_PER_INSTANCE="${AgentsPerInstance}"
-                  $Env:BUILDKITE_AGENT_TAGS="${BuildkiteAgentTags}"
-                  $Env:BUILDKITE_AGENT_TIMESTAMP_LINES="${BuildkiteAgentTimestampLines}"
-                  $Env:BUILDKITE_AGENT_EXPERIMENTS="${BuildkiteAgentExperiments}"
-                  $Env:BUILDKITE_AGENT_TRACING_BACKEND="${BuildkiteAgentTracingBackend}"
-                  $Env:BUILDKITE_AGENT_RELEASE="${BuildkiteAgentRelease}"
-                  $Env:BUILDKITE_QUEUE="${BuildkiteQueue}"
-                  $Env:BUILDKITE_AGENT_ENABLE_GIT_MIRRORS="${BuildkiteAgentEnableGitMirrors}"
-                  $Env:BUILDKITE_ELASTIC_BOOTSTRAP_SCRIPT="${BootstrapScriptUrl}"
-                  $Env:BUILDKITE_AGENT_SIGNING_KMS_KEY="${PipelineSigningKMSKey}"
-                  $Env:BUILDKITE_AGENT_SIGNING_FAILURE_BEHAVIOR="${PipelineSigningVerificationFailureBehavior}"
-                  $Env:BUILDKITE_ENV_FILE_URL="${AgentEnvFileUrl}"
-                  $Env:BUILDKITE_AUTHORIZED_USERS_URL="${AuthorizedUsersUrl}"
-                  $Env:BUILDKITE_ECR_POLICY="${ECRAccessPolicy}"
-                  $Env:BUILDKITE_TERMINATE_INSTANCE_AFTER_JOB="${BuildkiteTerminateInstanceAfterJob}"
-                  $Env:BUILDKITE_ADDITIONAL_SUDO_PERMISSIONS="${BuildkiteAdditionalSudoPermissions}"
-                  $Env:BUILDKITE_WINDOWS_ADMINISTRATOR="${BuildkiteWindowsAdministrator}"
-                  $Env:AWS_DEFAULT_REGION="${AWS::Region}"
-                  $Env:SECRETS_PLUGIN_ENABLED="${EnableSecretsPlugin}"
-                  $Env:ECR_PLUGIN_ENABLED="${EnableECRPlugin}"
-                  $Env:DOCKER_LOGIN_PLUGIN_ENABLED="${EnableDockerLoginPlugin}"
-                  $Env:AWS_REGION="${AWS::Region}"
-                  powershell -file C:\buildkite-agent\bin\bk-install-elastic-stack.ps1 >> C:\buildkite-agent\elastic-stack.log
-                  </powershell>
-                - {
-                    LocalSecretsBucket: !If [ CreateSecretsBucket, !Ref ManagedSecretsBucket, !Ref SecretsBucket ],
-                    LocalSecretsBucketRegion: !If [ CreateSecretsBucket, !Ref "AWS::Region", !Ref SecretsBucketRegion ],
-                    AgentTokenPath: !If [ UseCustomerManagedParameterPath, !Ref BuildkiteAgentTokenParameterStorePath, !Ref BuildkiteAgentTokenParameter ],
-                    PipelineSigningKMSKey: !If [ CreatePipelineSigningKMSKey, !Ref PipelineSigningKMSKey, !Ref PipelineSigningKMSKeyId ],
-                  }
-              - !Sub
-                - |
-                  Content-Type: multipart/mixed; boundary="==BOUNDARY=="
-                  MIME-Version: 1.0
-                  --==BOUNDARY==
-                  Content-Type: text/cloud-config; charset="us-ascii"
-                  #cloud-config
-                  cloud_final_modules:
-                    - [scripts-user, always]
-                  --==BOUNDARY==
-                  Content-Type: text/x-shellscript; charset="us-ascii"
-                  #!/bin/bash -v
-                  BUILDKITE_ENABLE_INSTANCE_STORAGE="${EnableInstanceStorage}" \
-                  BUILDKITE_MOUNT_TMPFS_AT_TMP="${MountTmpfsAtTmp}" \
-                    /usr/local/bin/bk-mount-instance-storage.sh
-                  --==BOUNDARY==
-                  Content-Type: text/x-shellscript; charset="us-ascii"
-                  #!/bin/bash -v
-                  DOCKER_USERNS_REMAP=${EnableDockerUserNamespaceRemap} \
-                  DOCKER_EXPERIMENTAL=${EnableDockerExperimental} \
-                  DOCKER_NETWORKING_PROTOCOL=${DockerNetworkingProtocol} \
-                  BUILDKITE_ENABLE_INSTANCE_STORAGE="${EnableInstanceStorage}" \
-                    /usr/local/bin/bk-configure-docker.sh
-                  --==BOUNDARY==
-                  Content-Type: text/x-shellscript; charset="us-ascii"
-                  #!/bin/bash -v
-                  BUILDKITE_STACK_NAME="${AWS::StackName}" \
-                  BUILDKITE_STACK_VERSION="%v" \
-                  BUILDKITE_SCALE_IN_IDLE_PERIOD="${ScaleInIdlePeriod}" \
-                  BUILDKITE_SECRETS_BUCKET="${LocalSecretsBucket}" \
-                  BUILDKITE_SECRETS_BUCKET_REGION="${LocalSecretsBucketRegion}" \
-                  BUILDKITE_AGENT_TOKEN_PATH="${AgentTokenPath}" \
-                  BUILDKITE_AGENTS_PER_INSTANCE="${AgentsPerInstance}" \
-                  BUILDKITE_AGENT_TAGS="${BuildkiteAgentTags}" \
-                  BUILDKITE_AGENT_TIMESTAMP_LINES="${BuildkiteAgentTimestampLines}" \
-                  BUILDKITE_AGENT_EXPERIMENTS="${BuildkiteAgentExperiments}" \
-                  BUILDKITE_AGENT_TRACING_BACKEND="${BuildkiteAgentTracingBackend}" \
-                  BUILDKITE_AGENT_RELEASE="${BuildkiteAgentRelease}" \
-                  BUILDKITE_AGENT_CANCEL_GRACE_PERIOD="${BuildkiteAgentCancelGracePeriod}" \
-                  BUILDKITE_AGENT_SIGNING_KMS_KEY="${PipelineSigningKMSKey}" \
-                  BUILDKITE_AGENT_SIGNING_FAILURE_BEHAVIOR="${PipelineSigningVerificationFailureBehavior}" \
-                  BUILDKITE_QUEUE="${BuildkiteQueue}" \
-                  BUILDKITE_AGENT_ENABLE_GIT_MIRRORS="${BuildkiteAgentEnableGitMirrors}" \
-                  BUILDKITE_ELASTIC_BOOTSTRAP_SCRIPT="${BootstrapScriptUrl}" \
-                  BUILDKITE_ENV_FILE_URL=${AgentEnvFileUrl} \
-                  BUILDKITE_ENABLE_INSTANCE_STORAGE="${EnableInstanceStorage}" \
-                  BUILDKITE_AUTHORIZED_USERS_URL="${AuthorizedUsersUrl}" \
-                  BUILDKITE_ECR_POLICY="${ECRAccessPolicy}" \
-                  BUILDKITE_TERMINATE_INSTANCE_AFTER_JOB="${BuildkiteTerminateInstanceAfterJob}" \
-                  BUILDKITE_ADDITIONAL_SUDO_PERMISSIONS="${BuildkiteAdditionalSudoPermissions}" \
-                  AWS_DEFAULT_REGION="${AWS::Region}" \
-                  SECRETS_PLUGIN_ENABLED="${EnableSecretsPlugin}" \
-                  ECR_PLUGIN_ENABLED="${EnableECRPlugin}" \
-                  DOCKER_LOGIN_PLUGIN_ENABLED="${EnableDockerLoginPlugin}" \
-                  DOCKER_EXPERIMENTAL="${EnableDockerExperimental}" \
-                  DOCKER_USERNS_REMAP=${EnableDockerUserNamespaceRemap} \
-                  AWS_REGION="${AWS::Region}" \
-                    /usr/local/bin/bk-install-elastic-stack.sh
-                  --==BOUNDARY==--
-                - {
-                    LocalSecretsBucket: !If [ CreateSecretsBucket, !Ref ManagedSecretsBucket, !Ref SecretsBucket ],
-                    LocalSecretsBucketRegion: !If [ CreateSecretsBucket, !Ref "AWS::Region", !Ref SecretsBucketRegion ],
-                    AgentTokenPath: !If [ UseCustomerManagedParameterPath, !Ref BuildkiteAgentTokenParameterStorePath, !Ref BuildkiteAgentTokenParameter ],
-                    PipelineSigningKMSKey: !If [ CreatePipelineSigningKMSKey, !Ref PipelineSigningKMSKey, !Ref PipelineSigningKMSKeyId ],
-                  }
+        UserData:
+          Fn::Base64: !If
+            - UseWindowsAgents
+            - !Sub
+              - |
+                <powershell>
+                $Env:DOCKER_USERNS_REMAP="${EnableDockerUserNamespaceRemap}"
+                $Env:DOCKER_EXPERIMENTAL="${EnableDockerExperimental}"
+                powershell -file C:\buildkite-agent\bin\bk-configure-docker.ps1 >> C:\buildkite-agent\elastic-stack.log
+                
+                $Env:BUILDKITE_STACK_NAME="${AWS::StackName}"
+                $Env:BUILDKITE_STACK_VERSION="v6.18.0"
+                $Env:BUILDKITE_SCALE_IN_IDLE_PERIOD="${ScaleInIdlePeriod}"
+                $Env:BUILDKITE_SECRETS_BUCKET="${LocalSecretsBucket}"
+                $Env:BUILDKITE_SECRETS_BUCKET_REGION="${LocalSecretsBucketRegion}"
+                $Env:BUILDKITE_AGENT_TOKEN_PATH="${AgentTokenPath}"
+                $Env:BUILDKITE_AGENTS_PER_INSTANCE="${AgentsPerInstance}"
+                $Env:BUILDKITE_AGENT_TAGS="${BuildkiteAgentTags}"
+                $Env:BUILDKITE_AGENT_TIMESTAMP_LINES="${BuildkiteAgentTimestampLines}"
+                $Env:BUILDKITE_AGENT_EXPERIMENTS="${BuildkiteAgentExperiments}"
+                $Env:BUILDKITE_AGENT_TRACING_BACKEND="${BuildkiteAgentTracingBackend}"
+                $Env:BUILDKITE_AGENT_RELEASE="${BuildkiteAgentRelease}"
+                $Env:BUILDKITE_QUEUE="${BuildkiteQueue}"
+                $Env:BUILDKITE_AGENT_ENABLE_GIT_MIRRORS="${BuildkiteAgentEnableGitMirrors}"
+                $Env:BUILDKITE_ELASTIC_BOOTSTRAP_SCRIPT="${BootstrapScriptUrl}"
+                $Env:BUILDKITE_ENV_FILE_URL="${AgentEnvFileUrl}"
+                $Env:BUILDKITE_AUTHORIZED_USERS_URL="${AuthorizedUsersUrl}"
+                $Env:BUILDKITE_ECR_POLICY="${ECRAccessPolicy}"
+                $Env:BUILDKITE_TERMINATE_INSTANCE_AFTER_JOB="${BuildkiteTerminateInstanceAfterJob}"
+                $Env:BUILDKITE_ADDITIONAL_SUDO_PERMISSIONS="${BuildkiteAdditionalSudoPermissions}"
+                $Env:BUILDKITE_WINDOWS_ADMINISTRATOR="${BuildkiteWindowsAdministrator}"
+                $Env:AWS_DEFAULT_REGION="${AWS::Region}"
+                $Env:SECRETS_PLUGIN_ENABLED="${EnableSecretsPlugin}"
+                $Env:ECR_PLUGIN_ENABLED="${EnableECRPlugin}"
+                $Env:DOCKER_LOGIN_PLUGIN_ENABLED="${EnableDockerLoginPlugin}"
+                $Env:AWS_REGION="${AWS::Region}"
+                powershell -file C:\buildkite-agent\bin\bk-install-elastic-stack.ps1 >> C:\buildkite-agent\elastic-stack.log
+                </powershell>
+              - {
+                LocalSecretsBucket: !If [ CreateSecretsBucket, !Ref ManagedSecretsBucket, !Ref SecretsBucket ],
+                LocalSecretsBucketRegion: !If [ CreateSecretsBucket, !Ref "AWS::Region", !Ref SecretsBucketRegion ],
+                AgentTokenPath: !If [ UseCustomerManagedParameterPath, !Ref BuildkiteAgentTokenParameterStorePath, !Ref BuildkiteAgentTokenParameter ],
+              }
+            - !Sub
+              - |
+                Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+                MIME-Version: 1.0
+                --==BOUNDARY==
+                Content-Type: text/cloud-config; charset="us-ascii"
+                #cloud-config
+                cloud_final_modules:
+                  - [scripts-user, always]
+                --==BOUNDARY==
+                Content-Type: text/x-shellscript; charset="us-ascii"
+                #!/bin/bash -v
+                BUILDKITE_ENABLE_INSTANCE_STORAGE="${EnableInstanceStorage}" \
+                BUILDKITE_MOUNT_TMPFS_AT_TMP="${MountTmpfsAtTmp}" \
+                  /usr/local/bin/bk-mount-instance-storage.sh
+                --==BOUNDARY==
+                Content-Type: text/x-shellscript; charset="us-ascii"
+                #!/bin/bash -v
+                DOCKER_USERNS_REMAP=${EnableDockerUserNamespaceRemap} \
+                DOCKER_EXPERIMENTAL=${EnableDockerExperimental} \
+                BUILDKITE_ENABLE_INSTANCE_STORAGE="${EnableInstanceStorage}" \
+                  /usr/local/bin/bk-configure-docker.sh
+                --==BOUNDARY==
+                Content-Type: text/x-shellscript; charset="us-ascii"
+                #!/bin/bash -v
+                BUILDKITE_STACK_NAME="${AWS::StackName}" \
+                BUILDKITE_STACK_VERSION="v6.18.0" \
+                BUILDKITE_SCALE_IN_IDLE_PERIOD="${ScaleInIdlePeriod}" \
+                BUILDKITE_SECRETS_BUCKET="${LocalSecretsBucket}" \
+                BUILDKITE_SECRETS_BUCKET_REGION="${LocalSecretsBucketRegion}" \
+                BUILDKITE_AGENT_TOKEN_PATH="${AgentTokenPath}" \
+                BUILDKITE_AGENTS_PER_INSTANCE="${AgentsPerInstance}" \
+                BUILDKITE_AGENT_TAGS="${BuildkiteAgentTags}" \
+                BUILDKITE_AGENT_TIMESTAMP_LINES="${BuildkiteAgentTimestampLines}" \
+                BUILDKITE_AGENT_EXPERIMENTS="${BuildkiteAgentExperiments}" \
+                BUILDKITE_AGENT_TRACING_BACKEND="${BuildkiteAgentTracingBackend}" \
+                BUILDKITE_AGENT_RELEASE="${BuildkiteAgentRelease}" \
+                BUILDKITE_AGENT_CANCEL_GRACE_PERIOD="${BuildkiteAgentCancelGracePeriod}" \
+                BUILDKITE_QUEUE="${BuildkiteQueue}" \
+                BUILDKITE_AGENT_ENABLE_GIT_MIRRORS="${BuildkiteAgentEnableGitMirrors}" \
+                BUILDKITE_ELASTIC_BOOTSTRAP_SCRIPT="${BootstrapScriptUrl}" \
+                BUILDKITE_ENV_FILE_URL=${AgentEnvFileUrl} \
+                BUILDKITE_ENABLE_INSTANCE_STORAGE="${EnableInstanceStorage}" \
+                BUILDKITE_AUTHORIZED_USERS_URL="${AuthorizedUsersUrl}" \
+                BUILDKITE_ECR_POLICY="${ECRAccessPolicy}" \
+                BUILDKITE_TERMINATE_INSTANCE_AFTER_JOB="${BuildkiteTerminateInstanceAfterJob}" \
+                BUILDKITE_ADDITIONAL_SUDO_PERMISSIONS="${BuildkiteAdditionalSudoPermissions}" \
+                AWS_DEFAULT_REGION="${AWS::Region}" \
+                SECRETS_PLUGIN_ENABLED="${EnableSecretsPlugin}" \
+                ECR_PLUGIN_ENABLED="${EnableECRPlugin}" \
+                DOCKER_LOGIN_PLUGIN_ENABLED="${EnableDockerLoginPlugin}" \
+                DOCKER_EXPERIMENTAL="${EnableDockerExperimental}" \
+                AWS_REGION="${AWS::Region}" \
+                  /usr/local/bin/bk-install-elastic-stack.sh
+                --==BOUNDARY==--
+              - {
+                LocalSecretsBucket: !If [ CreateSecretsBucket, !Ref ManagedSecretsBucket, !Ref SecretsBucket ],
+                LocalSecretsBucketRegion: !If [ CreateSecretsBucket, !Ref "AWS::Region", !Ref SecretsBucketRegion ],
+                AgentTokenPath: !If [ UseCustomerManagedParameterPath, !Ref BuildkiteAgentTokenParameterStorePath, !Ref BuildkiteAgentTokenParameter ],
+              }
 
   AgentAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -1448,19 +1350,19 @@ Resources:
             LaunchTemplateId: !Ref AgentLaunchTemplate
             Version: !GetAtt "AgentLaunchTemplate.LatestVersionNumber"
           Overrides:
-          - InstanceType: !Select [ "0", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
-          - !If
-            - UseInstanceType2
-            - InstanceType: !Select [ "1", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
-            - !Ref "AWS::NoValue"
-          - !If
-            - UseInstanceType3
-            - InstanceType: !Select [ "2", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
-            - !Ref "AWS::NoValue"
-          - !If
-            - UseInstanceType4
-            - InstanceType: !Select [ "3", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
-            - !Ref "AWS::NoValue"
+            - InstanceType: !Select [ "0", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
+            - !If
+              - UseInstanceType2
+              - InstanceType: !Select [ "1", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
+              - !Ref "AWS::NoValue"
+            - !If
+              - UseInstanceType3
+              - InstanceType: !Select [ "2", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
+              - !Ref "AWS::NoValue"
+            - !If
+              - UseInstanceType4
+              - InstanceType: !Select [ "3", !Split [ ",", !Join [ ",", [ !Ref InstanceTypes, "", "", "" ] ] ] ]
+              - !Ref "AWS::NoValue"
       MinSize: !Ref MinSize
       MaxSize: !Ref MaxSize
       CapacityRebalance: !Ref EnableCapacityRebalance
@@ -1549,8 +1451,8 @@ Resources:
       GroupDescription: Enable access to agents
       VpcId: !If [ "CreateVpcResources",  !Ref Vpc, !Ref VpcId ]
       Tags:
-      - Key: Name
-        Value: !Ref 'AWS::StackName'
+        - Key: Name
+          Value: !Ref 'AWS::StackName'
 
   SecurityGroupSshIngress:
     Condition: EnableSshIngress
